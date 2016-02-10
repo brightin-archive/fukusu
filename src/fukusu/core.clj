@@ -3,22 +3,18 @@
    [clojure.java.shell :refer [sh]]
    [clojure.string :as string]))
 
-(defn app-name? [app-name]
-  (not (string/starts-with? app-name "===")))
-
-(defn format-app-name [app-name]
-  (first (string/split app-name #"\s")))
-
 (defn send-heroku-command [& args]
   (let [output-string (:out (apply sh "heroku" args))]
     (string/split-lines output-string)))
 
 (defn get-app-names [app-regex]
-  (let [production-app? (partial re-find app-regex)]
+  (let [app? (fn [line] (not (string/starts-with? line "===")))
+        match? (partial re-find app-regex)
+        format (fn [line] (first (string/split line #"\s")))]
     (->> (send-heroku-command "apps")
-         (filter app-name?)
-         (filter production-app?)
-         (map format-app-name))))
+         (filter app?)
+         (filter match?)
+         (map format))))
 
 (defn apply-command [command apps]
   (pmap (fn [name] {:name name
