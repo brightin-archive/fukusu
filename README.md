@@ -19,6 +19,7 @@ We have plans to release Fukusu via a package manager but we haven't yet. To use
 ## Requirements
 
 - Java
+- Leiningen
 - Heroku Toolbelt
 
 ## License
