@@ -4,8 +4,8 @@
 
 (defn- print-results [results]
   (doall
-   (for [result results]
-     (println (format "%-40s %s" (:name result) (:output result))))))
+   (for [[name result] results]
+     (println (format "%-40s %s" name result)))))
 
 (defn list-apps [app-regex]
   (doall

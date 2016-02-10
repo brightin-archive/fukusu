@@ -17,9 +17,8 @@
          (map format))))
 
 (defn apply-command [command apps]
-  (pmap (fn [name] {:name name
-                    :output (send-heroku-command "run" command "--app" name)}) apps))
+  (pmap #(send-heroku-command "run" command "--app" %) apps))
 
 (defn apply-command-and-format [command apps formatter]
-  (let [result (apply-command command apps)]
-    (map #(update % :output formatter) result)))
+  (let [results (map formatter (apply-command command apps))]
+    (zipmap apps results)))
