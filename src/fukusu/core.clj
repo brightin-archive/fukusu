@@ -14,10 +14,10 @@
     (string/split-lines output-string)))
 
 (defn get-app-names [app-regex]
-  (let [production-app? (partial re-find app-regex)]
+  (let [match? (partial re-find app-regex)]
     (->> (send-heroku-command "apps")
          (filter app?)
-         (filter production-app?)
+         (filter match?)
          (map format-app-name))))
 
 (defn apply-command [command apps]
