@@ -8,9 +8,9 @@
     (string/split-lines output-string)))
 
 (defn get-app-names [app-regex]
-  (let [app? (fn [line] (not (string/starts-with? line "===")))
+  (let [app? #(not (string/starts-with? % "==="))
         match? (partial re-find app-regex)
-        format (fn [line] (first (string/split line #"\s")))]
+        format #(first (string/split % #"\s"))]
     (->> (send-heroku-command "apps")
          (filter app?)
          (filter match?)
