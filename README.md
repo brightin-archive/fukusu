@@ -16,6 +16,11 @@ This enables us to check the version of dependencies for all apps; grep the sour
 
 We have plans to release Fukusu via a package manager but we haven't yet. To use it you need clone this repository and run `lein bin`. This will create the executable in the bin directory. Use this file directly from the project root via `.bin/fukusu` or copy it to you $PATH.
 
+## Requirements
+
+- Java
+- Heroku Toolbelt
+
 ## License
 
 MIT
