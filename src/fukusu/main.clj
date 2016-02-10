@@ -37,7 +37,7 @@
 
 (def cli-options
   [["-a" "--apps REGEX" "Regex to limit action to specific apps."
-    :default (:default-regex (config))
+    :default (re-pattern (:default-regex (config)))
     :parse-fn re-pattern]
    ["-h" "--help"]])
 
