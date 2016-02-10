@@ -14,7 +14,7 @@
        (string/join \newline errors)))
 
 (defn usage [options-summary]
-  (->> ["Fukusu: run Heroku commands mulitple apps"
+  (->> ["Fukusu: run Heroku commands against multiple apps"
         ""
         "Usage: fukusu action [options]"
         ""
