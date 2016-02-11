@@ -1,40 +1,44 @@
-(ns fukusu.output
+(ns fukusu.commands
   (:require [fukusu.core :as core]
             [clojure.string :as string]))
 
-(defn- print-results [formatter response]
+(defn print-response [formatter response]
   (doall
    (for [[name r] response]
      (println (format "%-40s %s" name (formatter r))))))
 
 (defn list-apps
   "List all apps"
-  [app-regex _]
+  [app-names _]
   (doall
-   (map println (core/get-app-names app-regex)))
+   (map println app-names))
   (System/exit 0))
 
 (defn list-ruby
   "List Ruby versions for apps"
-  [app-regex _]
-  (let [app-names (core/get-app-names app-regex)
-        command "ruby -v"
+  [app-names _]
+  (let [command "ruby -v"
         split-by-space #(string/split % #"\s")
         formatter (comp second split-by-space last)]
-    (print-results formatter (core/get-response command app-names))
+    (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
 (defn list-gem
   "List gem versions for apps"
-  [app-regex [gem-name]]
-  (let [app-names (core/get-app-names app-regex)
-        command (str "bundle show " gem-name)
+  [app-names [gem-name]]
+  (let [command (str "bundle show " gem-name)
         split-by-dash #(string/split % #"-")
         formatter (comp second split-by-dash last)]
-    (print-results formatter (core/get-response command app-names))
+    (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
-(def commands
+(def all
   {"list:apps" #'list-apps
    "list:ruby" #'list-ruby
    "list:gem" #'list-gem})
+
+(def usage
+  (->>
+   (for [[name fn] all]
+     (format "  %-15s # %s" name (:doc (meta fn))))
+   (string/join \newline)))

@@ -3,7 +3,8 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
-            [fukusu.output :as output]))
+            [fukusu.commands :as commands]
+            [fukusu.core :as core]))
 
 (defn exit [status msg]
   (println msg)
@@ -13,12 +14,6 @@
   (str "The following errors occurred while parsing your command:\n\n"
        (string/join \newline errors)))
 
-(def command-usage
-  (->>
-   (for [[name fn] output/commands]
-     (format "  %-15s # %s" name (:doc (meta fn))))
-   (string/join \newline)))
-
 (defn usage [options-summary]
   (->> ["Fukusu: run Heroku commands against multiple apps"
         ""
@@ -27,8 +22,8 @@
         "Options:"
         options-summary
         ""
-        "Actions:"
-        command-usage]
+        "Commands:"
+        commands/usage]
        (string/join \newline)))
 
 (defn config []
@@ -52,6 +47,6 @@
     (cond
       (:help options) (exit 0 (usage summary))
       errors (exit 1 (error-msg errors)))
-    (if-let [command (get output/commands command-name)]
-      (command app-regex arguments)
+    (if-let [command (get commands/all command-name)]
+      (command (core/get-app-names app-regex) arguments)
       (exit 1 (usage summary)))))
