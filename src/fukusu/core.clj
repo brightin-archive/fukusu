@@ -17,5 +17,6 @@
          (map format))))
 
 (defn get-response [command apps]
-  (let [results (pmap #(send-heroku-command "run" command "--app" %) apps)]
-    (map vector apps results)))
+  (let [get-single-response #(apply send-heroku-command (merge command "--app" %))
+        response (pmap get-single-response apps)]
+    (map vector apps response)))

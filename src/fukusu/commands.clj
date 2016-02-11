@@ -17,7 +17,7 @@
 (defn list-ruby
   "List Ruby versions for apps"
   [app-names _]
-  (let [command "ruby -v"
+  (let [command ["run" "ruby -v"]
         split-by-space #(string/split % #"\s")
         formatter (comp second split-by-space last)]
     (print-response formatter (core/get-response command app-names))
@@ -26,7 +26,7 @@
 (defn list-gem
   "List gem versions for apps"
   [app-names [gem-name]]
-  (let [command (str "bundle show " gem-name)
+  (let [command ["run" (str "bundle show " gem-name)]
         split-by-dash #(string/split % #"-")
         formatter (comp second split-by-dash last)]
     (print-response formatter (core/get-response command app-names))
