@@ -1,10 +1,9 @@
 (defproject fukusu "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "Run commands against multiple Heroku applications"
 
-  :url "http://example.com/FIXME"
+  :url "https://github.com/brightin/fukusu"
 
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "MIT"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.3"]]
