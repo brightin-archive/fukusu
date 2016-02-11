@@ -16,9 +16,6 @@
          (filter match?)
          (map format))))
 
-(defn apply-command [command apps]
-  (pmap #(send-heroku-command "run" command "--app" %) apps))
-
-(defn apply-command-and-format [command apps formatter]
-  (let [results (map formatter (apply-command command apps))]
-    (zipmap apps results)))
+(defn get-response [command apps]
+  (let [results (pmap #(send-heroku-command "run" command "--app" %) apps)]
+    (map vector apps results)))

@@ -2,10 +2,10 @@
   (:require [fukusu.core :as core]
             [clojure.string :as string]))
 
-(defn- print-results [results]
+(defn- print-results [formatter response]
   (doall
-   (for [[name result] results]
-     (println (format "%-40s %s" name result)))))
+   (for [[name r] response]
+     (println (format "%-40s %s" name (formatter r))))))
 
 (defn list-apps
   "List all apps"
@@ -21,7 +21,7 @@
         command "ruby -v"
         split-by-space #(string/split % #"\s")
         formatter (comp second split-by-space last)]
-    (print-results (core/apply-command-and-format command app-names formatter))
+    (print-results formatter (core/get-response command app-names))
     (System/exit 0)))
 
 (defn list-gem
@@ -31,7 +31,7 @@
         command (str "bundle show " gem-name)
         split-by-dash #(string/split % #"-")
         formatter (comp second split-by-dash last)]
-    (print-results (core/apply-command-and-format command app-names formatter))
+    (print-results formatter (core/get-response command app-names))
     (System/exit 0)))
 
 (def commands
