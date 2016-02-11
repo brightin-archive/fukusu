@@ -1,7 +1,6 @@
 (ns fukusu.core
-  (:require
-   [clojure.java.shell :refer [sh]]
-   [clojure.string :as string]))
+  (:require [clojure.java.shell :refer [sh]]
+            [clojure.string :as string]))
 
 (defn send-heroku-command [& args]
   (let [output-string (:out (apply sh "heroku" args))]
