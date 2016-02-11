@@ -13,6 +13,12 @@
   (str "The following errors occurred while parsing your command:\n\n"
        (string/join \newline errors)))
 
+(def command-usage
+  (->>
+   (for [[name fn] output/commands]
+     (format "  %-15s # %s" name (:doc (meta fn))))
+   (string/join \newline)))
+
 (defn usage [options-summary]
   (->> ["Fukusu: run Heroku commands against multiple apps"
         ""
@@ -22,9 +28,7 @@
         options-summary
         ""
         "Actions:"
-        "  list:apps              # List all apps"
-        "  list:ruby              # List Ruby version for apps"
-        "  list:gem GEM_NAME      # List Gem versions for apps"]
+        command-usage]
        (string/join \newline)))
 
 (defn config []
@@ -43,12 +47,11 @@
 
 (defn -main [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)
+        [command-name & arguments] arguments
         app-regex (:apps options)]
     (cond
       (:help options) (exit 0 (usage summary))
       errors (exit 1 (error-msg errors)))
-    (case (first arguments)
-      "list:apps" (output/list-apps app-regex)
-      "list:ruby" (output/list-ruby app-regex)
-      "list:gem" (output/list-gem (second arguments) app-regex)
+    (if-let [command (get output/commands command-name)]
+      (command app-regex arguments)
       (exit 1 (usage summary)))))
