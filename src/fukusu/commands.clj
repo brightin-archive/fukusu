@@ -1,6 +1,6 @@
 (ns fukusu.commands
   (:require [fukusu.core :as core]
-            [clojure.string :as string]))
+            [fukusu.util :as util]))
 
 (defn print-response [formatter response]
   (doall
@@ -18,8 +18,7 @@
   "List Ruby versions for apps"
   [app-names _]
   (let [command ["run" "ruby -v"]
-        split-by-space #(string/split % #"\s")
-        formatter (comp second split-by-space last)]
+        formatter (comp second util/split-by-space last)]
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
@@ -27,8 +26,7 @@
   "List gem versions for apps"
   [app-names [gem-name]]
   (let [command ["run" (str "bundle show " gem-name)]
-        split-by-dash #(string/split % #"-")
-        formatter (comp second split-by-dash last)]
+        formatter (comp second util/split-by-dash last)]
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
@@ -41,4 +39,4 @@
   (->>
    (for [[name fn] all]
      (format "  %-15s # %s" name (:doc (meta fn))))
-   (string/join \newline)))
+   (apply util/long-str)))

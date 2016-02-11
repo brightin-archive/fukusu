@@ -1,8 +1,8 @@
 (ns fukusu.main
   (:gen-class)
   (:require [clojure.java.io :as io]
-            [clojure.string :as string]
-            [clojure.tools.cli :refer [parse-opts]]
+            [clojure.tools.cli :as cli]
+            [fukusu.util :refer [long-str]]
             [fukusu.commands :as commands]
             [fukusu.core :as core]))
 
@@ -11,16 +11,15 @@
   (System/exit status))
 
 (defn usage [options-summary]
-  (->> ["Fukusu: run Heroku commands against multiple apps"
-        ""
-        "Usage: fukusu action [options]"
-        ""
-        "Options:"
-        options-summary
-        ""
-        "Commands:"
-        commands/usage]
-       (string/join \newline)))
+  (long-str "Fukusu: run Heroku commands against multiple apps"
+            ""
+            "Usage: fukusu action [options]"
+            ""
+            "Options:"
+            options-summary
+            ""
+            "Commands:"
+            commands/usage))
 
 (defn get-config []
   (let [homedir (System/getenv "HOME")
@@ -37,11 +36,11 @@
    ["-h" "--help"]])
 
 (defn -main [& args]
-  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)
+  (let [{:keys [options arguments errors summary]} (cli/parse-opts args cli-options)
         [command-name & arguments] arguments
         command (get commands/all command-name)]
     (cond
       (:help options) (exit 0 (usage summary))
-      errors (exit 1 (string/join \newline errors))
+      errors (exit 1 (long-str errors))
       command (command (core/get-app-names (:apps options)) arguments)
       :else (exit 1 (usage summary)))))
