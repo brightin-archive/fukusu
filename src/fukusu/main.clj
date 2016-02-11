@@ -10,10 +10,6 @@
   (println msg)
   (System/exit status))
 
-(defn error-msg [errors]
-  (str "The following errors occurred while parsing your command:\n\n"
-       (string/join \newline errors)))
-
 (defn usage [options-summary]
   (->> ["Fukusu: run Heroku commands against multiple apps"
         ""
@@ -26,7 +22,7 @@
         commands/usage]
        (string/join \newline)))
 
-(defn config []
+(defn get-config []
   (let [homedir (System/getenv "HOME")
         config-path (str homedir "/.fukusu-config.edn")
         config-file (io/file config-path)]
@@ -36,17 +32,16 @@
 
 (def cli-options
   [["-a" "--apps REGEX" "Regex to limit action to specific apps."
-    :default (re-pattern (:default-regex (config)))
+    :default (re-pattern (:default-regex (get-config)))
     :parse-fn re-pattern]
    ["-h" "--help"]])
 
 (defn -main [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)
         [command-name & arguments] arguments
-        app-regex (:apps options)]
+        command (get commands/all command-name)]
     (cond
       (:help options) (exit 0 (usage summary))
-      errors (exit 1 (error-msg errors)))
-    (if-let [command (get commands/all command-name)]
-      (command (core/get-app-names app-regex) arguments)
-      (exit 1 (usage summary)))))
+      errors (exit 1 (string/join \newline errors))
+      command (command (core/get-app-names (:apps options)) arguments)
+      :else (exit 1 (usage summary)))))
