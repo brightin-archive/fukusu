@@ -10,7 +10,7 @@
 (defn get-app-names [app-regex]
   (let [app? #(not (string/starts-with? % "==="))
         match? (partial re-find app-regex)
-        format #(first (string/split % #"\s"))]
+        format (partial re-find #"\S+")]
     (->> (send-heroku-command "apps")
          (filter app?)
          (filter match?)
