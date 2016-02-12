@@ -38,5 +38,5 @@
 (def usage
   (->>
    (for [[name fn] all]
-     (format "  %-15s # %s" name (:doc (meta fn))))
+     (format "  %-12s # %s" name (:doc (meta fn))))
    (apply util/long-str)))

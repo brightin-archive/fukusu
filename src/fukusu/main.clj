@@ -11,15 +11,10 @@
   (System/exit status))
 
 (defn usage [options-summary]
-  (long-str "Fukusu: run Heroku commands against multiple apps"
-            ""
-            "Usage: fukusu action [options]"
-            ""
-            "Options:"
-            options-summary
-            ""
-            "Commands:"
-            commands/usage))
+  (long-str
+    "Usage: \n  fukusu COMMAND [options]\n"
+    "Options:" options-summary ""
+    "Commands:" commands/usage))
 
 (defn get-config []
   (let [homedir (System/getenv "HOME")
@@ -30,7 +25,9 @@
       {:default-regex "."})))
 
 (def cli-options
-  [["-a" "--apps REGEX" "Regex to limit action to specific apps."
+  [["-a"
+    "--apps REGEX"
+    "Regex to limit action to specific apps."
     :default (re-pattern (:default-regex (get-config)))
     :parse-fn re-pattern]
    ["-h" "--help"]])
