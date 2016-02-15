@@ -30,10 +30,19 @@
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
+(defn list-db
+  "List the Heroku Postgres database plan"
+  [app-names [_]]
+  (let [command ["pg:info"]
+        formatter (comp second (partial re-find #"Plan:\s+(.+)") str second)]
+    (print-response formatter (core/get-response command app-names))
+    (System/exit 0)))
+
 (def all
   {"list:apps" #'list-apps
    "list:ruby" #'list-ruby
-   "list:gem" #'list-gem})
+   "list:gem" #'list-gem
+   "list:db" #'list-db})
 
 (def usage
   (->>
