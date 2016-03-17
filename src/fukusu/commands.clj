@@ -38,11 +38,21 @@
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
+(defn list-addons
+  "List apps with specified addon"
+  [app-names [addon-name]]
+  (let [command ["addons"]
+        find-addon #(filter (fn [line] (re-find (re-pattern addon-name) line)) %)
+        formatter (comp first util/split-by-space str last find-addon)]
+    (print-response formatter (core/get-response command app-names))
+    (System/exit 0)))
+
 (def all
   {"list:apps" #'list-apps
    "list:ruby" #'list-ruby
    "list:gem" #'list-gem
-   "list:db" #'list-db})
+   "list:db" #'list-db
+   "list:addons" #'list-addons})
 
 (def usage
   (->>
