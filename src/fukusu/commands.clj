@@ -47,6 +47,16 @@
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
+(defn check-access
+  "List app name with user if user has access"
+  [app-names [user-name]]
+  (let [command ["access"]
+        find-user #(filter (fn [line] (re-find (re-pattern user-name) line)) %)
+        formatter (comp first util/split-by-space str last find-user)]
+    (print-response formatter (core/get-response command app-names))
+    (System/exit 0)))
+
+
 (defn remove-access
   "Remove access for specific EMAIL."
   [app-names [email]]
@@ -61,6 +71,7 @@
    "list:gem" #'list-gem
    "list:db" #'list-db
    "list:addons" #'list-addons
+   "access:check" #'check-access
    "access:remove" #'remove-access})
 
 (def usage
