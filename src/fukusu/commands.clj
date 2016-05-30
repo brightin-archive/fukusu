@@ -47,12 +47,21 @@
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
+(defn remove-access
+  "Remove access for specific EMAIL."
+  [app-names [email]]
+  (let [command ["access:remove" email]
+        formatter (comp first util/split-by-space last)]
+    (print-response formatter (core/get-response command app-names))
+    (System/exit 0)))
+
 (def all
   {"list:apps" #'list-apps
    "list:ruby" #'list-ruby
    "list:gem" #'list-gem
    "list:db" #'list-db
-   "list:addons" #'list-addons})
+   "list:addons" #'list-addons
+   "access:remove" #'remove-access})
 
 (def usage
   (->>
