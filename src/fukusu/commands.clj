@@ -65,6 +65,12 @@
     (print-response formatter (core/get-response command app-names))
     (System/exit 0)))
 
+(defn command-do
+  "Run a specific heroku command for mulitple apps for example `fukusu do \"pg:backups:capture\"`"
+  [app-names [command]]
+  (print-response last (core/get-response [command] app-names))
+  (System/exit 0))
+
 (def all
   {"list:apps" #'list-apps
    "list:ruby" #'list-ruby
@@ -72,7 +78,8 @@
    "list:db" #'list-db
    "list:addons" #'list-addons
    "access:check" #'check-access
-   "access:remove" #'remove-access})
+   "access:remove" #'remove-access
+   "do" #'command-do})
 
 (def usage
   (->>
